@@ -9,27 +9,47 @@
 	// "tagOwners": {
 	//  	"tag:example": ["autogroup:admin"],
 	// },
+  // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
+  "tagOwners": {
+    "tag:k8s-operator": [],
+    "tag:k8s": [
+      "tag:k8s-operator"
+    ]
+  },
 
 	// Define access control lists for users, groups, autogroups, tags,
 	// Tailscale IP addresses, and subnet ranges.
-	"acls": [
+  "acls": [
 		// Allow all connections.
 		// Comment this section out if you want to define specific restrictions.
-		{"action": "accept", "src": ["*"], "dst": ["*:*"]},
-	],
+    {
+      "action": "accept",
+      "src": ["*"],
+      "dst": [
+        "*:*"
+      ]
+    }
+  ],
 
 	// Define users and devices that can use Tailscale SSH.
-	"ssh": [
+  "ssh": [
 		// Allow all users to SSH into their own devices in check mode.
 		// Comment this section out if you want to define specific restrictions.
-		{
-			"action":      "check",
-			"src":         ["autogroup:members"],
-			"dst":         ["autogroup:self"],
-			"users":       ["autogroup:nonroot", "root"],
-			"checkPeriod": "1h",
-		},
-	],
+    {
+      "action": "check",
+      "src": [
+        "autogroup:members"
+      ],
+      "dst": [
+        "autogroup:self"
+      ],
+      "users": [
+        "autogroup:nonroot",
+        "root"
+      ],
+      "checkPeriod": "1h"
+    }
+  ],
 
 	// Test access rules every time they're saved.
 	// "tests": [
@@ -40,5 +60,5 @@
 	//  	},
 	// ],
 
-	"randomizeClientPort": true,
+  "randomizeClientPort": true
 }
