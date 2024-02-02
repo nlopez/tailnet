@@ -14,6 +14,9 @@
     "tag:k8s-operator": [],
     "tag:k8s": [
       "tag:k8s-operator"
+    ],
+    "tag:work": [
+      "nlopez@github"
     ]
   },
 
@@ -60,5 +63,15 @@
 	//  	},
 	// ],
 
-  "randomizeClientPort": true
+  "randomizeClientPort": true,
+  "nodeAttrs": [
+    {
+      "target": [
+        "tag:work"
+      ],
+      "attr": [
+        "nextdns:37848c"
+      ]
+    }
+  ]
 }
