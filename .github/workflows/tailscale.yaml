@@ -24,7 +24,7 @@ jobs:
       - name: Deploy ACL
         if: github.event_name == 'push'
         id: deploy-acl
-        uses: tailscale/gitops-acl-action@v1
+        uses: tailscale/gitops-acl-action@287fb935799def5f8a2aef4df9b1286f78fc384b
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
