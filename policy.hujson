@@ -1,16 +1,6 @@
-// Example/default ACLs for unrestricted connections.
 {
-	// Declare static groups of users. Use autogroups for all users or users with a specific role.
-	// "groups": {
-	//  	"group:example": ["alice@example.com", "bob@example.com"],
-	// },
-
-	// Define the tags which can be applied to devices and by which users.
-	// "tagOwners": {
-	//  	"tag:example": ["autogroup:admin"],
-	// },
-  // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
   "tagOwners": {
+    // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
     "tag:k8s-operator": [],
     "tag:k8s": [
       "tag:k8s-operator"
@@ -65,6 +55,8 @@
 
   "randomizeClientPort": true,
   "nodeAttrs": [
+    // Use Work NextDNS profile for work tagged Tailscale machines
+    // https://tailscale.com/kb/1218/nextdns#use-different-nextdns-profiles-for-different-devices
     {
       "target": [
         "tag:work"
