@@ -23,6 +23,17 @@
   // Define access control lists for users, groups, autogroups, tags,
   // Tailscale IP addresses, and subnet ranges.
   "acls": [
+    // All users can use exit nodes
+    {
+      "action": "accept",
+      "src": [
+        "autogroup:member"
+      ],
+      "dst": [
+        "autogroup:internet:*"
+      ]
+    },
+    // intra-home access
     {
       "action": "accept",
       "src": [
@@ -60,8 +71,12 @@
   "sshTests": [
     {
       "src": "nlopez@github",
-      "dst": ["tag:ssh-dst"],
-      "accept": ["root"]
+      "dst": [
+        "tag:ssh-dst"
+      ],
+      "accept": [
+        "root"
+      ]
     }
   ],
   "randomizeClientPort": true,
