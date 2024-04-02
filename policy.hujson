@@ -13,6 +13,9 @@
     "tag:work": [
       "autogroup:admin"
     ],
+    "tag:home": [
+      "autogroup:admin"
+    ],
     "tag:ssh-dst": [
       "autogroup:admin"
     ]
