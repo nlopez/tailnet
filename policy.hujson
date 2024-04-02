@@ -29,7 +29,7 @@
         "tag:home"
       ],
       "dst": [
-        "tag:home"
+        "tag:home:*"
       ]
     }
   ],
