@@ -46,8 +46,7 @@
       "users": [
         "autogroup:nonroot",
         "root"
-      ],
-      "checkPeriod": "1h"
+      ]
     }
   ],
   // Test access rules every time they're saved.
@@ -58,6 +57,13 @@
   //  		"deny": ["100.101.102.103:443"],
   //  	},
   // ],
+  "sshTests": [
+    {
+      "src": "nlopez@github",
+      "dst": ["gw-lga1", "tag:ssh-dst"],
+      "accept": "root"
+    }
+  ],
   "randomizeClientPort": true,
   "nodeAttrs": [
     // Use Work NextDNS profile for work tagged Tailscale machines
