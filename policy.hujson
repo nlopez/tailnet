@@ -22,8 +22,8 @@
     // intra-home access
     {
       "action": "accept",
-      "src": ["*"],
-      "dst": ["*:*"]
+      "src": ["tag:home"],
+      "dst": ["tag:home:*"]
     }
   ],
   // Define users and devices that can use Tailscale SSH.
