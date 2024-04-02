@@ -37,10 +37,10 @@
     {
       "action": "accept",
       "src": [
-        "tag:home"
+        "*"
       ],
       "dst": [
-        "tag:home:*"
+        "*:*:*"
       ]
     }
   ],
