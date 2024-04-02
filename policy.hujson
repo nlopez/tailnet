@@ -1,4 +1,7 @@
 {
+  "groups" {
+    "group:admin": ["nlopez@github"]
+  },
   "tagOwners": {
     // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
     "tag:k8s-operator": [],
@@ -34,7 +37,7 @@
     {
       "action": "check",
       "src": [
-        "autogroup:admin"
+        "group:admin"
       ],
       "dst": [
         "tag:ssh-dst"
