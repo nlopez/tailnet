@@ -6,13 +6,13 @@
       "tag:k8s-operator"
     ],
     "tag:work": [
-      "nlopez@github"
+      "autogroup:admin"
     ],
     "tag:ssh-src": [
-      "nlopez@github"
+      "autogroup:admin"
     ],
     "tag:ssh-dst": [
-      "nlopez@github"
+      "autogroup:admin"
     ]
   },
   // Define access control lists for users, groups, autogroups, tags,
