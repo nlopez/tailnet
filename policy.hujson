@@ -38,7 +38,7 @@
     {
       "action": "accept",
       "src": [
-        "group:admin"
+        "autogroup:admin"
       ],
       "dst": [
         "tag:ssh-dst"
