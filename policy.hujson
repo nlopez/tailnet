@@ -61,7 +61,7 @@
     {
       "src": "nlopez@github",
       "dst": ["gw-lga1", "tag:ssh-dst"],
-      "accept": "root"
+      "accept": ["root"]
     }
   ],
   "randomizeClientPort": true,
