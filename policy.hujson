@@ -7,6 +7,12 @@
     ],
     "tag:work": [
       "nlopez@github"
+    ],
+    "tag:ssh-src": [
+      "nlopez@github"
+    ],
+    "tag:ssh-dst": [
+      "nlopez@github"
     ]
   },
   // Define access control lists for users, groups, autogroups, tags,
@@ -31,10 +37,10 @@
     {
       "action": "check",
       "src": [
-        "autogroup:members"
+        "tag:ssh-src"
       ],
       "dst": [
-        "autogroup:self"
+        "tag:ssh-dst"
       ],
       "users": [
         "autogroup:nonroot",
