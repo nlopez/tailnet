@@ -16,7 +16,7 @@
     // All users can use exit nodes
     {
       "action": "accept",
-      "src": ["autogroup:member"],
+      "src": ["autogroup:member", "tag:home", "tag:work"],
       "dst": ["autogroup:internet:*"]
     },
     // intra-home access
