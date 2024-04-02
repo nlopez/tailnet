@@ -8,9 +8,6 @@
     "tag:work": [
       "autogroup:admin"
     ],
-    "tag:ssh-src": [
-      "autogroup:admin"
-    ],
     "tag:ssh-dst": [
       "autogroup:admin"
     ]
@@ -37,7 +34,7 @@
     {
       "action": "check",
       "src": [
-        "tag:ssh-src"
+        "autogroup:admin"
       ],
       "dst": [
         "tag:ssh-dst"
