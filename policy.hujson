@@ -23,15 +23,13 @@
   // Define access control lists for users, groups, autogroups, tags,
   // Tailscale IP addresses, and subnet ranges.
   "acls": [
-    // Allow all connections.
-    // Comment this section out if you want to define specific restrictions.
     {
       "action": "accept",
       "src": [
-        "*"
+        "tag:home"
       ],
       "dst": [
-        "*:*"
+        "tag:home"
       ]
     }
   ],
