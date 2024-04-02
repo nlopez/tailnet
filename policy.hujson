@@ -60,7 +60,7 @@
   "sshTests": [
     {
       "src": "nlopez@github",
-      "dst": ["gw-lga1", "tag:ssh-dst"],
+      "dst": ["tag:ssh-dst"],
       "accept": ["root"]
     }
   ],
