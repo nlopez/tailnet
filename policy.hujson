@@ -1,6 +1,8 @@
 {
-  "groups" {
-    "group:admin": ["nlopez@github"]
+  "groups": {
+    "group:admin": [
+      "nlopez@github"
+    ]
   },
   "tagOwners": {
     // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
