@@ -33,7 +33,7 @@ jobs:
           action: apply
 
       - name: Test ACL
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'push'
         id: test-acl
         uses: tailscale/gitops-acl-action@v1
         with:
