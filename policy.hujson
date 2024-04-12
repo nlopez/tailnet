@@ -24,7 +24,9 @@
       "action": "accept",
       "src": ["tag:home"],
       "dst": ["tag:home:*"]
-    }
+    },
+    // Allow all connections.
+    { "action": "accept", "src": ["*"], "dst": ["*:*"] }
   ],
   // Define users and devices that can use Tailscale SSH.
   "ssh": [
