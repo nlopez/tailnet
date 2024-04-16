@@ -30,12 +30,18 @@
   ],
   // Define users and devices that can use Tailscale SSH.
   "ssh": [
-    {
-      "action": "accept",
-      "src": ["group:admin"],
-      "dst": ["tag:ssh-dst", "tag:home"],
-      "users": ["autogroup:nonroot", "root"]
-    }
+		{
+			"action": "accept",
+			"src": ["autogroup:member"],
+			"dst": ["autogroup:self"],
+			"users": ["root", "autogroup:nonroot"]
+		},
+		{
+			"action": "accept",
+			"src": ["autogroup:member"],
+			"dst": ["tag:home"],
+			"users": ["root", "autogroup:nonroot"]
+		}
   ],
   // Test access rules every time they're saved.
   // "tests": [
