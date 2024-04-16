@@ -54,7 +54,7 @@
   "sshTests": [
     {
       "src": "nlopez@github",
-      "dst": ["tag:ssh-dst"],
+      "dst": ["tag:home"],
       "accept": ["root"]
     }
   ],
