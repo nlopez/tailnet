@@ -33,7 +33,7 @@
     {
       "action": "accept",
       "src": ["group:admin"],
-      "dst": ["tag:ssh-dst", "autogroup:self"],
+      "dst": ["tag:ssh-dst", "autogroup:self", "tag:home"],
       "users": ["autogroup:nonroot", "root"]
     }
   ],
