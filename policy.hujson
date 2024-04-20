@@ -42,6 +42,12 @@
 			"dst": ["tag:home"],
 			"users": ["root", "autogroup:nonroot"]
 		}
+    {
+      "action": "accept",
+      "src": ["group:admin"],
+      "dst": ["tag:home"],
+      "users": ["autogroup:nonroot", "root"]
+    }
   ],
   // Test access rules every time they're saved.
   // "tests": [
