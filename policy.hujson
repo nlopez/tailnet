@@ -41,7 +41,7 @@
 			"src": ["autogroup:member"],
 			"dst": ["tag:home"],
 			"users": ["root", "autogroup:nonroot"]
-		}
+		},
     {
       "action": "accept",
       "src": ["group:admin"],
