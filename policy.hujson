@@ -1,76 +1,15 @@
 {
-  "groups": {
-    "group:admin": ["nlopez@github"]
-  },
-  "tagOwners": {
-    // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
-    "tag:k8s-operator": [],
-    "tag:k8s": ["tag:k8s-operator"],
-    "tag:work": ["autogroup:admin"],
-    "tag:home": ["autogroup:admin"],
-    "tag:ssh-dst": ["autogroup:admin"]
-  },
-  // Define access control lists for users, groups, autogroups, tags,
-  // Tailscale IP addresses, and subnet ranges.
   "acls": [
-    // All users can use exit nodes
-    {
-      "action": "accept",
-      "src": ["autogroup:member", "tag:home", "tag:work"],
-      "dst": ["autogroup:internet:*"]
-    },
-    // intra-home access
-    {
-      "action": "accept",
-      "src": ["tag:home"],
-      "dst": ["tag:home:*"]
-    },
     // Allow all connections.
-    { "action": "accept", "src": ["*"], "dst": ["*:*"] }
+    { "action": "accept", "src": ["*"], "dst": ["*:*"] },
   ],
-  // Define users and devices that can use Tailscale SSH.
   "ssh": [
-		{
-			"action": "accept",
-			"src": ["autogroup:member"],
-			"dst": ["autogroup:self"],
-			"users": ["root", "autogroup:nonroot"]
-		},
-		{
-			"action": "accept",
-			"src": ["autogroup:member"],
-			"dst": ["tag:home"],
-			"users": ["root", "autogroup:nonroot"]
-		},
+    // Allow all users to SSH into their own devices in check mode.
     {
-      "action": "accept",
-      "src": ["group:admin"],
-      "dst": ["tag:home"],
+      "action": "check",
+      "src": ["autogroup:member"],
+      "dst": ["autogroup:self"],
       "users": ["autogroup:nonroot", "root"]
-    }
-  ],
-  // Test access rules every time they're saved.
-  // "tests": [
-  //  	{
-  //  		"src": "alice@example.com",
-  //  		"accept": ["tag:example"],
-  //  		"deny": ["100.101.102.103:443"],
-  //  	},
-  // ],
-  "sshTests": [
-    {
-      "src": "nlopez@github",
-      "dst": ["tag:home"],
-      "accept": ["root"]
-    }
-  ],
-  "randomizeClientPort": true,
-  "nodeAttrs": [
-    // Use Work NextDNS profile for work tagged Tailscale machines
-    // https://tailscale.com/kb/1218/nextdns#use-different-nextdns-profiles-for-different-devices
-    {
-      "target": ["tag:work"],
-      "attr": ["nextdns:37848c"]
     }
   ]
 }
