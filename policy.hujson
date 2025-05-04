@@ -4,6 +4,8 @@
     "tag:k8s-operator": [],
     "tag:k8s": ["tag:k8s-operator"],
     "tag:work": ["autogroup:admin"],
+    "tag:lga1": ["autogroup:admin"],
+    "tag:lga2": ["autogroup:admin"],
   },
   "acls": [
     // Allow all connections.
