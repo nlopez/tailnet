@@ -58,5 +58,11 @@
     // Use Work NextDNS profile for work tagged Tailscale machines
     // https://tailscale.com/kb/1218/nextdns#use-different-nextdns-profiles-for-different-devices
     { "target": ["tag:work"], "attr": ["nextdns:37848c"] }
-  ]
+  ],
+  "tests": [
+    {
+      "src": "nlopez@github",
+      "accept": ["192.168.222.1:22", "192.168.239.1:22", "192.168.222.200:80", "192.168.222.200:443"]
+    }
+  ],
 }
