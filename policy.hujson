@@ -21,11 +21,11 @@
       "src": ["tag:home"],
       "dst": ["tag:home:*"]
     },
-    // Allow all connections from lga2 -> lga1
+    // Allow all connections within lga1 and lga2.
     {
       "action": "accept",
-      "src": ["ipset:lga2"],
-      "dst": ["ipset:lga1:*"]
+      "src": ["ipset:lga1", "ipset:lga2"],
+      "dst": ["ipset:lga1:*", "ipset:lga2:*"]
     }
   ],
   "ipsets": {
@@ -61,7 +61,7 @@
   ],
   "tests": [
     {
-      "src": "nlopez@github",
+      "src": "tag:home",
       "accept": ["192.168.222.1:22", "192.168.239.1:22", "192.168.222.200:80", "192.168.222.200:443"]
     }
   ],
