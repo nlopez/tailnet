@@ -7,50 +7,36 @@
     "tag:home": ["autogroup:admin"],
     "tag:lga1": ["autogroup:admin"],
     "tag:lga2": ["autogroup:admin"],
+    "tag:admin": ["autogroup:admin"],
   },
   "acls": [
-    // Allow all connections.
-    //{
-    //  "action": "accept",
-    //  "src": ["*"],
-    //  "dst": ["*:*"]
-    //},
-    // Allow all connections between home devices.
+    // Allow admin machines to connect to internet and home machines.
     {
       "action": "accept",
-      "src": ["tag:home"],
-      "dst": ["tag:home:*"]
-    },
-    // Allow home machines to connect to anything.
-    {
-      "action": "accept",
-      "src": ["tag:home"],
-      "dst": ["*:*"]
-    },
-    // Allow all connections within lga1 and lga2.
-    {
-      "action": "accept",
-      "src": ["ipset:lga1", "ipset:lga2"],
-      "dst": ["ipset:lga1:*", "ipset:lga2:*"]
-    },
-    // Allow Tailscale admins to use any exit node.
-    {
-      "action": "accept",
-      "src": ["tag:home"],
+      "src": ["tag:admin", "autogroup:admin"],
       "dst": ["autogroup:internet:*", "tag:home:*", "ipset:home:*"],
+    },
+    // Allow work machines to connect to the internet and home k8s.
+    {
+      "action": "accept",
+      "src": ["tag:work"],
+      "dst": ["autogroup:internet:*", "ipset:k8s-api:6443"],
     },
   ],
   "ipsets": {
     "ipset:lga1": [
-      "add 192.168.222.0/24",
-      "add 192.168.223.0/24",
+      "192.168.222.0/24",
+      "192.168.223.0/24",
     ],
     "ipset:lga2": [
-      "add 192.168.239.0/24",
+      "192.168.239.0/24",
     ],
     "ipset:home": [
       "ipset:lga1",
       "ipset:lga2",
+    ],
+    "ipset:k8s-api": [
+      "192.168.222.245",
     ],
   },
   "ssh": [
@@ -61,12 +47,6 @@
       "dst": ["autogroup:self"],
       "users": ["autogroup:nonroot", "root"]
     },
-//    {
-//		  "action": "check",
-//		  "src":    ["tag:home"],
-//		  "dst":    ["autogroup:tagged"],
-//		  "users":  ["autogroup:nonroot", "root"],
-//	  },
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
   "randomizeClientPort": true,
@@ -78,7 +58,13 @@
   "tests": [
     {
       "src": "tag:home",
-      "accept": ["192.168.222.1:22", "192.168.239.1:22"]
+      "accept": ["192.168.222.1:22", "192.168.239.1:22"],
+      "deny": ["tag:work"],
     },
+    {
+      "src": "tag:work",
+      "accept": ["1.1.1.1:53", "192.168.222.245:6443"],
+      "deny": ["192.168.222.1:22", "192.168.239.1:22"],
+    }
   ],
 }
