@@ -57,7 +57,7 @@
   ],
   "tests": [
     {
-      "src": "tag:home",
+      "src": "tag:admin",
       "accept": ["192.168.222.1:22", "192.168.239.1:22"],
       "deny": ["tag:work:22"],
     },
