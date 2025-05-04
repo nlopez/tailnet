@@ -20,8 +20,23 @@
       "action": "accept",
       "src": ["tag:home"],
       "dst": ["tag:home:*"]
+    },
+    // Allow all connections from lga2 -> lga1
+    {
+      "action": "accept",
+      "src": ["ipset:lga2"],
+      "dst": ["ipset:lga1:*"]
     }
   ],
+  "ipsets": {
+    "ipset:lga1": [
+      "add 192.168.222.0/24",
+      "add 192.168.223.0/24",
+    ],
+    "ipset:lga2": [
+      "add 192.168.239.0/24",
+    ],
+  },
   "ssh": [
     // Allow all users to SSH into their own devices in check mode.
     {
