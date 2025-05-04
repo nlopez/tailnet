@@ -10,10 +10,16 @@
   },
   "acls": [
     // Allow all connections.
+    //{
+    //  "action": "accept",
+    //  "src": ["*"],
+    //  "dst": ["*:*"]
+    //},
+    // Allow all connections between home devices.
     {
       "action": "accept",
-      "src": ["*"],
-      "dst": ["*:*"]
+      "src": ["tag:home"],
+      "dst": ["tag:home:*"]
     }
   ],
   "ssh": [
