@@ -21,6 +21,12 @@
       "src": ["tag:home"],
       "dst": ["tag:home:*"]
     },
+    // Allow home machines to connect to anything.
+    {
+      "action": "accept",
+      "src": ["tag:home"],
+      "dst": ["*:*"]
+    },
     // Allow all connections within lga1 and lga2.
     {
       "action": "accept",
