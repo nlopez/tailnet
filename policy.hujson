@@ -37,7 +37,7 @@
     {
       "action": "accept",
       "src": ["tag:home"],
-      "dst": ["autogroup:internet:*", "tag:home:*"],
+      "dst": ["autogroup:internet:*", "tag:home:*", "ipset:home:*"],
     },
   ],
   "ipsets": {
@@ -47,6 +47,10 @@
     ],
     "ipset:lga2": [
       "add 192.168.239.0/24",
+    ],
+    "ipset:home": [
+      "ipset:lga1",
+      "ipset:lga2",
     ],
   },
   "ssh": [
@@ -74,7 +78,7 @@
   "tests": [
     {
       "src": "tag:home",
-      "accept": ["192.168.222.1:22,80,443", "192.168.239.1:22,80,443"]
+      "accept": ["192.168.222.1:22", "192.168.239.1:22"]
     },
   ],
 }
