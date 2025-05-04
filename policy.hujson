@@ -36,7 +36,7 @@
     // Allow Tailscale admins to use any exit node.
     {
       "action": "accept",
-      "src": ["autogroup:admin"],
+      "src": ["autogroup:admin", "autogroup:tagged"],
       "dst": ["autogroup:internet:*"],
     },
   ],
