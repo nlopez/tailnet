@@ -4,6 +4,7 @@
     "tag:k8s-operator": [],
     "tag:k8s": ["tag:k8s-operator"],
     "tag:work": ["autogroup:admin"],
+    "tag:home": ["autogroup:admin"],
     "tag:lga1": ["autogroup:admin"],
     "tag:lga2": ["autogroup:admin"],
   },
@@ -22,7 +23,13 @@
       "src": ["autogroup:member"],
       "dst": ["autogroup:self"],
       "users": ["autogroup:nonroot", "root"]
-    }
+    },
+//    {
+//		  "action": "check",
+//		  "src":    ["tag:home"],
+//		  "dst":    ["autogroup:tagged"],
+//		  "users":  ["autogroup:nonroot", "root"],
+//	  },
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
   "randomizeClientPort": true,
