@@ -27,6 +27,7 @@
       "action": "accept",
       "src": ["tag:lga2"],
       "dst": ["tag:lga1:443"],
+    },
   ],
   "ipsets": {
     "ipset:lga1": [
