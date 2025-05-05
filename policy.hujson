@@ -53,6 +53,12 @@
       "dst": ["autogroup:self"],
       "users": ["autogroup:nonroot", "root"]
     },
+    { // Allow admin to ssh anywhere
+      "action": "check",
+      "src": ["tag:admin"],
+      "dst": ["*:*"],
+      "users": ["autogroup:nonroot", "root"]
+    },
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
   "randomizeClientPort": true,
