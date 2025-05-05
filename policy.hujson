@@ -56,15 +56,19 @@
     { "target": ["tag:work"], "attr": ["nextdns:37848c"] }
   ],
   "tests": [
-    {
+    { // admin can connect to home but not work
       "src": "tag:admin",
       "accept": ["192.168.222.1:22", "192.168.239.1:22"],
       "deny": ["tag:work:22"],
     },
-    {
+    { // work can connect to internet and k8s api, but not home
       "src": "tag:work",
       "accept": ["1.1.1.1:53", "192.168.222.245:6443"],
       "deny": ["192.168.222.1:22", "192.168.239.1:22"],
-    }
+    },
+    { # tv to pms
+      "src": "100.72.105.94",
+      "accept": ["100.90.100.54:443"],
+    },
   ],
 }
