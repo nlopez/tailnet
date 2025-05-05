@@ -53,10 +53,10 @@
       "dst": ["autogroup:self"],
       "users": ["autogroup:nonroot", "root"]
     },
-    { // Allow admin to ssh anywhere
-      "action": "check",
+    { // Allow admin to ssh to home machines
+      "action": "accept",
       "src": ["tag:admin"],
-      "dst": ["*:*"],
+      "dst": ["tag:home"],
       "users": ["autogroup:nonroot", "root"]
     },
   ],
