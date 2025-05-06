@@ -28,6 +28,13 @@
       "src": ["tag:lga2"],
       "dst": ["tag:lga1:443"],
     },
+    // Allow lga2 to connect to work on tcp/24800 (Deskflow)
+    {
+      "action": "accept",
+      "src": ["tag:lga2"],
+      "dst": ["tag:work:24800"],
+      "proto": "tcp",
+    },
   ],
   "ipsets": {
     "ipset:lga1": [
