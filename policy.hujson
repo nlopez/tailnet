@@ -20,7 +20,7 @@
     {
       "action": "accept",
       "src": ["tag:work"],
-      "dst": ["autogroup:internet:*", "ipset:k8s-api:6443"],
+      "dst": ["autogroup:internet:*", "ipset:k8s-api:6443", "tag:home"],
     },
     // Allow lga2 to connect to lga1 via https
     {
