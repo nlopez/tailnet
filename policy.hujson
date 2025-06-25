@@ -2,39 +2,84 @@
   "tagOwners": {
     // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
     "tag:k8s-operator": [],
-    "tag:k8s": ["tag:k8s-operator"],
-    "tag:work": ["autogroup:admin"],
-    "tag:home": ["autogroup:admin", "tag:k8s-operator"],
-    "tag:lga1": ["autogroup:admin", "tag:k8s-operator"],
-    "tag:lga2": ["autogroup:admin"],
-    "tag:admin": ["autogroup:admin"],
+    "tag:k8s": [
+      "tag:k8s-operator"
+    ],
+    "tag:work": [
+      "autogroup:admin"
+    ],
+    "tag:home": [
+      "autogroup:admin",
+      "tag:k8s-operator"
+    ],
+    "tag:lga1": [
+      "autogroup:admin",
+      "tag:k8s-operator"
+    ],
+    "tag:lga2": [
+      "autogroup:admin"
+    ],
+    "tag:admin": [
+      "autogroup:admin"
+    ],
   },
   "acls": [
     // Allow admin machines to connect to internet and home machines.
     {
       "action": "accept",
-      "src": ["tag:admin", "autogroup:admin"],
-      "dst": ["autogroup:internet:*", "tag:home:*", "ipset:home:*"],
+      "src": [
+        "tag:admin",
+        "autogroup:admin"
+      ],
+      "dst": [
+        "autogroup:internet:*",
+        "tag:home:*",
+        "ipset:home:*"
+      ],
     },
     // Allow work machines to connect to the internet and home k8s.
     {
       "action": "accept",
-      "src": ["tag:work"],
-      "dst": ["autogroup:internet:*", "ipset:k8s-api:6443", "tag:home:*"],
+      "src": [
+        "tag:work"
+      ],
+      "dst": [
+        "autogroup:internet:*",
+        "ipset:k8s-api:6443",
+        "tag:home:*"
+      ],
     },
     // Allow lga2 to connect to lga1 via https
     {
       "action": "accept",
-      "src": ["tag:lga2"],
-      "dst": ["tag:lga1:443"],
+      "src": [
+        "tag:lga2"
+      ],
+      "dst": [
+        "tag:lga1:443"
+      ],
     },
     // Allow lga2 to connect to work on tcp/24800 (Deskflow)
     {
       "action": "accept",
-      "src": ["tag:lga2"],
-      "dst": ["tag:work:24800"],
+      "src": [
+        "tag:lga2"
+      ],
+      "dst": [
+        "tag:work:24800"
+      ],
       "proto": "tcp",
     },
+    {
+      "action": "accept",
+      "src": [
+        "tag:work"
+      ],
+      "dst": [
+        "tag:lga2:24800"
+      ],
+      "proto": "tcp",
+    }
   ],
   "ipsets": {
     "ipset:lga1": [
@@ -56,15 +101,29 @@
     // Allow all users to SSH into their own devices in check mode.
     {
       "action": "check",
-      "src": ["autogroup:member"],
-      "dst": ["autogroup:self"],
-      "users": ["autogroup:nonroot", "root"]
+      "src": [
+        "autogroup:member"
+      ],
+      "dst": [
+        "autogroup:self"
+      ],
+      "users": [
+        "autogroup:nonroot",
+        "root"
+      ]
     },
     { // Allow admin to ssh to home machines
       "action": "accept",
-      "src": ["tag:admin"],
-      "dst": ["tag:home"],
-      "users": ["autogroup:nonroot", "root"]
+      "src": [
+        "tag:admin"
+      ],
+      "dst": [
+        "tag:home"
+      ],
+      "users": [
+        "autogroup:nonroot",
+        "root"
+      ]
     },
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
@@ -72,22 +131,42 @@
   "nodeAttrs": [
     // Use Work NextDNS profile for work tagged Tailscale machines
     // https://tailscale.com/kb/1218/nextdns#use-different-nextdns-profiles-for-different-devices
-    { "target": ["tag:work"], "attr": ["nextdns:37848c"] }
+    {
+      "target": [
+        "tag:work"
+      ],
+      "attr": [
+        "nextdns:37848c"
+      ]
+    }
   ],
   "tests": [
     { // admin can connect to home but not work
       "src": "tag:admin",
-      "accept": ["192.168.222.1:22", "192.168.239.1:22"],
-      "deny": ["tag:work:22"],
+      "accept": [
+        "192.168.222.1:22",
+        "192.168.239.1:22"
+      ],
+      "deny": [
+        "tag:work:22"
+      ],
     },
-//    { // work can connect to internet and k8s api, but not home
-//      "src": "tag:work",
-//      "accept": ["1.1.1.1:53", "192.168.222.245:6443"],
-//      "deny": ["192.168.222.1:22", "192.168.239.1:22"],
-//    },
+    { // work can connect to internet and k8s api, but not home
+      "src": "tag:work",
+      "accept": [
+        "1.1.1.1:53",
+        "192.168.222.245:6443"
+      ],
+      "deny": [
+        "192.168.222.1:22",
+        "192.168.239.1:22"
+      ],
+    },
     { // tv to pms
       "src": "100.72.105.94",
-      "accept": ["100.90.100.54:443"],
+      "accept": [
+        "100.90.100.54:443"
+      ],
     },
   ],
 }
