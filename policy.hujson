@@ -22,6 +22,9 @@
     "tag:admin": [
       "autogroup:admin"
     ],
+    "tag:container": [
+      "autogroup:admin"
+    ],
   },
   "acls": [
     // Allow admin machines to connect to internet and home machines.
