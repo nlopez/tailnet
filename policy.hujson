@@ -1,4 +1,8 @@
 {
+  "groups": {
+    "group:k8s-readers": ["nlopez.github"],
+    "group:admin": ["nlopez.github"],
+  },
   "tagOwners": {
     // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
     "tag:k8s-operator": [],
@@ -119,7 +123,7 @@
       },
     },
     {
-      "src": ["tag:k8s-readers"],
+      "src": ["group:k8s-readers"],
       "dst": ["tag:k8s-operator"],
       "app": {
         "tailscale.com/cap/kubernetes": [{
@@ -217,12 +221,6 @@
       "accept": [
         "100.73.16.44:24800",
       ]
-    },
-    { // tv to pms
-      "src": "100.72.105.94",
-      "accept": [
-        "100.90.100.54:443"
-      ],
     },
   ],
 }
