@@ -119,7 +119,7 @@
       },
     },
     {
-      "src": ["group:k8s-readers"],
+      "src": ["tag:k8s-readers"],
       "dst": ["tag:k8s-operator"],
       "app": {
         "tailscale.com/cap/kubernetes": [{
