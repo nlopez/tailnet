@@ -97,7 +97,8 @@
     // Allow k8s-readers to connect to k8s API
     {
       "src": [
-        "tag:k8s-readers"
+        "tag:k8s-readers",
+        "autogroup:admin",
       ],
       "dst": [
         "tag:k8s-operator"
@@ -106,6 +107,28 @@
         "tcp:443"
       ]
     },
+    {
+      "src": ["autogroup:admin"],
+      "dst": ["tag:k8s-operator"],
+      "app": {
+        "tailscale.com/cap/kubernetes": [{
+          "impersonate": {
+            "groups": ["system:masters"],
+          },
+        }],
+      },
+    },
+    {
+      "src": ["group:k8s-readers"],
+      "dst": ["tag:k8s-operator"],
+      "app": {
+        "tailscale.com/cap/kubernetes": [{
+          "impersonate": {
+            "groups": ["tailnet-readers"],
+          },
+        }],
+      },
+    }
   ],
   "ipsets": {
     "ipset:lga1": [
