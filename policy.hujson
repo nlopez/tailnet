@@ -1,7 +1,11 @@
 {
   "groups": {
-    "group:k8s-readers": ["nlopez@github"],
-    "group:k8s-admins": ["nlopez@github"],
+    "group:k8s-readers": [
+      "nlopez@github"
+    ],
+    "group:k8s-admins": [
+      "nlopez@github"
+    ],
   },
   "tagOwners": {
     // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
@@ -103,6 +107,7 @@
       "src": [
         "tag:k8s-readers",
         "autogroup:admin",
+        "tag:admin",
       ],
       "dst": [
         "tag:k8s-operator"
@@ -112,25 +117,42 @@
       ]
     },
     {
-      "src": ["group:k8s-admins"],
-      "dst": ["tag:k8s-operator"],
+      "src": [
+        "group:k8s-admins",
+        "tag:admin"
+      ],
+      "dst": [
+        "tag:k8s-operator"
+      ],
       "app": {
-        "tailscale.com/cap/kubernetes": [{
-          "impersonate": {
-            "groups": ["system:masters"],
-          },
-        }],
+        "tailscale.com/cap/kubernetes": [
+          {
+            "impersonate": {
+              "groups": [
+                "system:masters"
+              ],
+            },
+          }
+        ],
       },
     },
     {
-      "src": ["group:k8s-readers"],
-      "dst": ["tag:k8s-operator"],
+      "src": [
+        "group:k8s-readers"
+      ],
+      "dst": [
+        "tag:k8s-operator"
+      ],
       "app": {
-        "tailscale.com/cap/kubernetes": [{
-          "impersonate": {
-            "groups": ["tailnet-readers"],
-          },
-        }],
+        "tailscale.com/cap/kubernetes": [
+          {
+            "impersonate": {
+              "groups": [
+                "tailnet-readers"
+              ],
+            },
+          }
+        ],
       },
     }
   ],
