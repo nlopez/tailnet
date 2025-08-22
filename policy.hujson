@@ -92,6 +92,8 @@
       ],
       "proto": "tcp",
     },
+  ],
+  "grants": [
     // Allow k8s-readers to connect to k8s API
     {
       "action": "accept",
@@ -101,6 +103,9 @@
       "dst": [
         "tag:k8s-operator"
       ],
+      "ip": [
+        "tcp:443"
+      ]
     },
   ],
   "ipsets": {
