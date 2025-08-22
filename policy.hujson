@@ -1,7 +1,7 @@
 {
   "groups": {
     "group:k8s-readers": ["nlopez@github"],
-    "group:admin": ["nlopez@github"],
+    "group:k8s-admins": ["nlopez@github"],
   },
   "tagOwners": {
     // https://tailscale.com/kb/1236/kubernetes-operator?slug=kb&slug=1236&slug=kubernetes-operator#prerequisites
@@ -112,7 +112,7 @@
       ]
     },
     {
-      "src": ["autogroup:admin"],
+      "src": ["group:k8s-admins"],
       "dst": ["tag:k8s-operator"],
       "app": {
         "tailscale.com/cap/kubernetes": [{
