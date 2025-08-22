@@ -96,7 +96,6 @@
   "grants": [
     // Allow k8s-readers to connect to k8s API
     {
-      "action": "accept",
       "src": [
         "tag:k8s-readers"
       ],
