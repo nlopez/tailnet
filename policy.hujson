@@ -102,6 +102,11 @@
     },
   ],
   "grants": [
+    {
+      "src": ["tag:home"],
+      "dst": ["tag:home"],
+      "ip": ["*"],
+    },
     // Allow k8s-readers to connect to k8s API
     {
       "src": [
