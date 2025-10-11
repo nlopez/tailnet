@@ -222,6 +222,10 @@
     }
   ],
   "tests": [
+    {
+      "src": "tag:home",
+      "accept": ["tag:home:*"]
+    },
     { // admin can connect to home but not work
       "src": "tag:admin",
       "accept": [
