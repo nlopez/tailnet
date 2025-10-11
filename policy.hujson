@@ -40,7 +40,9 @@
   // needs support service enablement
   "autoApprovers": {
     "services": {
-      "tag:k8s": ["tag:k8s"],
+      "tag:k8s": [
+        "tag:k8s"
+      ],
     },
   },
   "acls": [
@@ -103,9 +105,15 @@
   ],
   "grants": [
     {
-      "src": ["tag:home"],
-      "dst": ["tag:home"],
-      "ip": ["*"],
+      "src": [
+        "tag:home"
+      ],
+      "dst": [
+        "tag:home"
+      ],
+      "ip": [
+        "*"
+      ],
     },
     // Allow k8s-readers to connect to k8s API
     {
@@ -224,7 +232,11 @@
   "tests": [
     {
       "src": "tag:home",
-      "accept": ["tag:home:*"]
+      "accept": [
+        "tag:home:8080",
+        "tag:home:80",
+        "tag:home:443"
+      ]
     },
     { // admin can connect to home but not work
       "src": "tag:admin",
