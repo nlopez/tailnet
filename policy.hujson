@@ -227,7 +227,11 @@
       "attr": [
         "nextdns:37848c"
       ]
-    }
+    },
+    {
+      "target": ["autogroup:member"],
+      "attr":   ["funnel"],
+    },
   ],
   "tests": [
     {
