@@ -44,6 +44,13 @@
         "tag:k8s"
       ],
     },
+    // Redundant subnet router auto-approval for lga2 LAN (gw-lga2 and odroid-lga2)
+    "routes": {
+      "192.168.239.0/24": [
+        "tag:lga2",
+        "autogroup:admin"
+      ],
+    },
   },
   "grants": [
     // All tailnet members → their own devices
@@ -62,6 +69,12 @@
     {
       "src": ["tag:admin", "autogroup:admin"],
       "dst": ["tag:home"],
+      "ip": ["*"],
+    },
+    // Admin machines → lga2 LAN subnet (redundant via gw-lga2 and odroid-lga2)
+    {
+      "src": ["tag:admin", "autogroup:admin"],
+      "dst": ["192.168.239.0/24"],
       "ip": ["*"],
     },
     // Work machines → internet (exit node access)
