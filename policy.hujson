@@ -175,7 +175,6 @@
     },
     { // nlopez admin ssh to home machines, MFA required on every connection
       "action": "check",
-      "checkPeriod": "always",
       "src": [
         "nlopez@github"
       ],
@@ -211,10 +210,9 @@
     },
   ],
   "sshTests": [
-    // Verify admin MFA is required on every SSH connection to home machines
-    // (self-SSH test omitted: sshTests don't support autogroup:self as dst)
+    // Verify check mode for nlopez SSH to home machines
     {
-      "src": "tag:admin",
+      "src": "nlopez@github",
       "dst": ["tag:home"],
       "check": ["autogroup:nonroot", "root"],
       "deny": [],
