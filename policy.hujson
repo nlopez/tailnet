@@ -46,6 +46,12 @@
     },
   },
   "grants": [
+    // All tailnet members → their own devices
+    {
+      "src": ["autogroup:member"],
+      "dst": ["autogroup:self"],
+      "ip": ["*"],
+    },
     // Admin machines → internet (exit node access)
     {
       "src": ["tag:admin", "autogroup:admin"],
@@ -94,9 +100,15 @@
       "dst": ["tag:home"],
       "ip": ["*"],
     },
-    // k8s-readers → k8s-operator (tcp/443)
+    // k8s-readers → k8s-operator (network: tcp/443)
     {
-      "src": ["group:k8s-readers", "autogroup:admin", "tag:admin"],
+      "src": ["group:k8s-readers"],
+      "dst": ["tag:k8s-operator"],
+      "ip": ["tcp:443"],
+    },
+    // k8s-admins (and admins) → k8s-operator (network: tcp/443)
+    {
+      "src": ["group:k8s-admins", "tag:admin"],
       "dst": ["tag:k8s-operator"],
       "ip": ["tcp:443"],
     },
@@ -199,14 +211,8 @@
     },
   ],
   "sshTests": [
-    // Verify self-SSH requires MFA check mode (use specific user, not autogroup)
-    {
-      "src": "nlopez@github",
-      "dst": ["autogroup:self"],
-      "check": ["autogroup:nonroot", "root"],
-      "deny": [],
-    },
     // Verify admin MFA is required on every SSH connection to home machines
+    // (self-SSH test omitted: sshTests don't support autogroup:self as dst)
     {
       "src": "tag:admin",
       "dst": ["tag:home"],
@@ -258,6 +264,13 @@
       "src": "tag:work",
       "accept": [
         "tag:lga2:24800",
+      ],
+    },
+    // k8s-readers can connect to k8s operator
+    {
+      "src": "nlopez@github",
+      "accept": [
+        "tag:k8s-operator:443",
       ],
     },
     // admin can connect to k8s operator
