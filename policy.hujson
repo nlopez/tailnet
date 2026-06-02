@@ -45,143 +45,89 @@
       ],
     },
   },
-  "acls": [
-    // Allow admin machines to connect to internet and home machines.
-    {
-      "action": "accept",
-      "src": [
-        "tag:admin",
-        "autogroup:admin"
-      ],
-      "dst": [
-        "autogroup:internet:*",
-        "tag:home:*",
-        "ipset:home:*"
-      ],
-    },
-    // Allow work machines to connect to the internet and home k8s.
-    {
-      "action": "accept",
-      "src": [
-        "tag:work"
-      ],
-      "dst": [
-        "autogroup:internet:*",
-        "ipset:k8s-api:6443",
-        "tag:home:*"
-      ],
-    },
-    // Allow lga2 to connect to lga1 via https
-    {
-      "action": "accept",
-      "src": [
-        "tag:lga2"
-      ],
-      "dst": [
-        "tag:lga1:443"
-      ],
-    },
-    // Allow lga2 to connect to work on tcp/24800 (Deskflow)
-    {
-      "action": "accept",
-      "src": [
-        "tag:lga2"
-      ],
-      "dst": [
-        "tag:work:24800"
-      ],
-      "proto": "tcp",
-    },
-    {
-      "action": "accept",
-      "src": [
-        "tag:work"
-      ],
-      "dst": [
-        "tag:lga2:24800"
-      ],
-      "proto": "tcp",
-    },
-  ],
   "grants": [
-    // Allow admin machines to reach home machines
+    // Admin machines → internet (exit node access)
     {
-      "src": [
-        "tag:admin",
-        "autogroup:admin"
-      ],
-      "dst": [
-        "tag:home"
-      ],
-      "ip": [
-        "*"
-      ],
+      "src": ["tag:admin", "autogroup:admin"],
+      "dst": ["autogroup:internet"],
+      "ip": ["*"],
     },
-    // Allow home-to-home
+    // Admin machines → home machines (all ports)
     {
-      "src": [
-        "tag:home"
-      ],
-      "dst": [
-        "tag:home"
-      ],
-      "ip": [
-        "*"
-      ],
+      "src": ["tag:admin", "autogroup:admin"],
+      "dst": ["tag:home"],
+      "ip": ["*"],
     },
-    // Allow k8s-readers to connect to k8s API
+    // Work machines → internet (exit node access)
     {
-      "src": [
-        "tag:k8s-readers",
-        "autogroup:admin",
-        "tag:admin",
-      ],
-      "dst": [
-        "tag:k8s-operator"
-      ],
-      "ip": [
-        "tcp:443"
-      ]
+      "src": ["tag:work"],
+      "dst": ["autogroup:internet"],
+      "ip": ["*"],
     },
+    // Work machines → k8s API (tcp/6443)
     {
-      "src": [
-        "group:k8s-admins",
-        "tag:admin"
-      ],
-      "dst": [
-        "tag:k8s-operator"
-      ],
+      "src": ["tag:work"],
+      "dst": ["ipset:k8s-api"],
+      "ip": ["tcp:6443"],
+    },
+    // lga2 → lga1 HTTPS
+    {
+      "src": ["tag:lga2"],
+      "dst": ["tag:lga1"],
+      "ip": ["tcp:443"],
+    },
+    // lga2 ↔ work Deskflow
+    {
+      "src": ["tag:lga2"],
+      "dst": ["tag:work"],
+      "ip": ["tcp:24800"],
+    },
+    // work → lga2 Deskflow
+    {
+      "src": ["tag:work"],
+      "dst": ["tag:lga2"],
+      "ip": ["tcp:24800"],
+    },
+    // home → home (all ports)
+    {
+      "src": ["tag:home"],
+      "dst": ["tag:home"],
+      "ip": ["*"],
+    },
+    // k8s-readers → k8s-operator (tcp/443)
+    {
+      "src": ["group:k8s-readers", "autogroup:admin", "tag:admin"],
+      "dst": ["tag:k8s-operator"],
+      "ip": ["tcp:443"],
+    },
+    // k8s-admins → k8s-operator (k8s impersonate: system:masters)
+    {
+      "src": ["group:k8s-admins", "tag:admin"],
+      "dst": ["tag:k8s-operator"],
       "app": {
         "tailscale.com/cap/kubernetes": [
           {
             "impersonate": {
-              "groups": [
-                "system:masters"
-              ],
+              "groups": ["system:masters"],
             },
           }
         ],
       },
     },
+    // k8s-readers → k8s-operator (k8s impersonate: tailnet-readers)
     {
-      "src": [
-        "group:k8s-readers"
-      ],
-      "dst": [
-        "tag:k8s-operator"
-      ],
+      "src": ["group:k8s-readers"],
+      "dst": ["tag:k8s-operator"],
       "app": {
         "tailscale.com/cap/kubernetes": [
           {
             "impersonate": {
-              "groups": [
-                "tailnet-readers"
-              ],
+              "groups": ["tailnet-readers"],
             },
           }
         ],
       },
-    }
+    },
   ],
   "ipsets": {
     "ipset:lga1": [
@@ -253,6 +199,13 @@
     },
   ],
   "sshTests": [
+    // Verify self-SSH requires MFA check mode
+    {
+      "src": "autogroup:member",
+      "dst": ["autogroup:self"],
+      "check": ["autogroup:nonroot", "root"],
+      "deny": [],
+    },
     // Verify admin MFA is required on every SSH connection to home machines
     {
       "src": "tag:admin",
@@ -262,6 +215,7 @@
     },
   ],
   "tests": [
+    // home machines can access common service ports on other home machines
     {
       "src": "tag:home",
       "accept": [
@@ -270,33 +224,43 @@
         "tag:home:443"
       ]
     },
-    { // admin can connect to home but not work
+    // admin can connect to home but not work
+    {
       "src": "tag:admin",
       "accept": [
-        "192.168.222.1:22",
-        "192.168.239.1:22"
+        "tag:home:22",
+        "tag:home:80",
       ],
       "deny": [
         "tag:work:22"
       ],
     },
-    { // work can connect to internet and k8s api, but not home
+    // work can reach internet and k8s api, but not home
+    {
       "src": "tag:work",
       "accept": [
+        "ipset:k8s-api:6443",
         "1.1.1.1:53",
-        "192.168.222.245:6443"
       ],
       "deny": [
-        "192.168.222.1:22",
-        "192.168.239.1:22"
+        "tag:home:22",
+        "tag:home:80",
       ],
     },
-    { // work-laptop to raphael deskflow
-      "src": "100.73.16.44",
+    // lga2 ↔ work Deskflow (tcp/24800)
+    {
+      "src": "tag:lga2",
       "accept": [
-        "100.73.16.44:24800",
-      ]
+        "tag:work:24800",
+      ],
     },
+    {
+      "src": "tag:work",
+      "accept": [
+        "tag:lga2:24800",
+      ],
+    },
+    // admin can connect to k8s operator
     {
       "src": "tag:admin",
       "accept": [
