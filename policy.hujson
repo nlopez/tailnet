@@ -173,10 +173,10 @@
         "root"
       ]
     },
-    { // nlopez admin ssh to home machines, MFA required on every connection
-      "action": "check",
+    { // nlopez admin ssh to home machines (MFA enforced at Tailscale login via GitHub)
+      "action": "accept",
       "src": [
-        "autogroup:member"
+        "tag:admin"
       ],
       "dst": [
         "tag:home"
