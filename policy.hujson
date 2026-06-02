@@ -64,7 +64,13 @@
       "dst": ["autogroup:self"],
       "ip": ["*"],
     },
-    // Admin machines → internet (exit node access)
+    // Admin machines → everything (tag:admin has unrestricted access)
+    {
+      "src": ["tag:admin", "autogroup:admin"],
+      "dst": ["*"],
+      "ip": ["*"],
+    },
+    // Admin machines → internet (exit node access, redundant with blanket grant)
     {
       "src": ["tag:admin", "autogroup:admin"],
       "dst": ["autogroup:internet"],
@@ -217,20 +223,18 @@
         "tag:home:443"
       ]
     },
-    // admin can SSH to all tagged machines; cannot reach work data-plane (no grant)
+    // admin can SSH to all tagged machines; work deny no longer needed (blanket grant)
     {
       "src": "tag:admin",
       "accept": [
         "tag:k8s-operator:22",
+        "tag:work:22",
         "tag:home:22",
         "tag:lga1:22",
         "tag:lga2:22",
         "tag:admin:22",
         "tag:container:22",
         "tag:exit:22",
-      ],
-      "deny": [
-        "tag:work:22",
       ],
     },
     // work can reach internet only, NOT home/lga1/k8s/other-work
