@@ -173,11 +173,11 @@
         "root"
       ]
     },
-    { // Allow admin to ssh to home machines, MFA required on every connection
+    { // nlopez admin ssh to home machines, MFA required on every connection
       "action": "check",
       "checkPeriod": "always",
       "src": [
-        "tag:admin"
+        "nlopez@github"
       ],
       "dst": [
         "tag:home"
