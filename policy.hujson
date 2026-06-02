@@ -161,22 +161,27 @@
     ],
   },
   "ssh": [
-    // tailnet policy: only allow ssh from tag:admin machines
-    { // nlopez admin ssh to all machines (MFA enforced at Tailscale login via GitHub)
+    // ssh: only tag:admin machines can SSH into any tagged machine
+    {
       "action": "accept",
       "src": [
         "tag:admin"
       ],
       "dst": [
-        "*"
+        "tag:k8s-operator",
+        "tag:work",
+        "tag:home",
+        "tag:lga1",
+        "tag:lga2",
+        "tag:admin",
+        "tag:container",
+        "tag:exit",
       ],
       "users": [
         "autogroup:nonroot",
         "root"
       ]
     },
-    // All other SSH is implicitly denied (deny-by-default; no accept rule for
-    // tag:work, tag:home, tag:lga1, tag:lga2, tag:container, etc.).
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
   "randomizeClientPort": true,
@@ -212,13 +217,17 @@
         "tag:home:443"
       ]
     },
-    // admin can SSH to all machines; cannot reach work data-plane (no grant)
+    // admin can SSH to all tagged machines; cannot reach work data-plane (no grant)
     {
       "src": "tag:admin",
       "accept": [
+        "tag:k8s-operator:22",
         "tag:home:22",
         "tag:lga1:22",
         "tag:lga2:22",
+        "tag:admin:22",
+        "tag:container:22",
+        "tag:exit:22",
       ],
       "deny": [
         "tag:work:22",
