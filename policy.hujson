@@ -212,7 +212,7 @@
   "sshTests": [
     // Verify check mode for any member SSH to home machines
     {
-      "src": "tag:admin",
+      "src": "autogroup:member",
       "dst": ["tag:home"],
       "check": ["autogroup:nonroot", "root"],
       "deny": [],
