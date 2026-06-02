@@ -176,12 +176,15 @@
     { // nlopez admin ssh to home machines, MFA required on every connection
       "action": "check",
       "src": [
-        "autogroup:member"
+        "*"
       ],
       "dst": [
         "tag:home"
       ],
-      "users": ["*"]
+      "users": [
+        "autogroup:nonroot",
+        "root"
+      ]
     },
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
