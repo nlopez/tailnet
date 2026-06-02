@@ -64,10 +64,18 @@
       "dst": ["autogroup:self"],
       "ip": ["*"],
     },
-    // Admin machines → everything (tag:admin has unrestricted access)
+    // Admin machines → all destinations except tag:work (SSH excluded from work)
     {
       "src": ["tag:admin", "autogroup:admin"],
-      "dst": ["*"],
+      "dst": [
+        "tag:k8s-operator",
+        "tag:home",
+        "tag:lga1",
+        "tag:lga2",
+        "tag:admin",
+        "tag:container",
+        "tag:exit",
+      ],
       "ip": ["*"],
     },
     // Admin machines → internet (exit node access, redundant with blanket grant)
@@ -76,14 +84,6 @@
       "dst": ["autogroup:internet"],
       "ip": ["*"],
     },
-    // Admin machines → home machines (all ports)
-    {
-      "src": ["tag:admin", "autogroup:admin"],
-      "dst": ["tag:home"],
-      "ip": ["*"],
-    },
-    // Admin machines → lga2 LAN subnet (redundant via gw-lga2 and odroid-lga2)
-    {
       "src": ["tag:admin", "autogroup:admin"],
       "dst": ["192.168.239.0/24"],
       "ip": ["*"],
