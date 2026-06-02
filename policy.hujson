@@ -84,10 +84,6 @@
       "dst": ["autogroup:internet"],
       "ip": ["*"],
     },
-      "src": ["tag:admin", "autogroup:admin"],
-      "dst": ["192.168.239.0/24"],
-      "ip": ["*"],
-    },
     // Work machines → internet (exit node access only, routed through tagged exit nodes)
     // NOTE: tag:work machines MUST NOT carry tag:admin or tag:home (least-privilege)
     {
