@@ -161,35 +161,22 @@
     ],
   },
   "ssh": [
-    // Allow all users to SSH into their own devices in check mode.
-    {
-      "action": "check",
-      "src": [
-        "autogroup:member"
-      ],
-      "dst": [
-        "autogroup:self"
-      ],
-      "users": [
-        "autogroup:nonroot",
-        "root"
-      ]
-    },
-    { // nlopez admin ssh to home machines (MFA enforced at Tailscale login via GitHub)
+    // tailnet policy: only allow ssh from tag:admin machines
+    { // nlopez admin ssh to all machines (MFA enforced at Tailscale login via GitHub)
       "action": "accept",
       "src": [
         "tag:admin"
       ],
       "dst": [
-        "tag:home"
+        "*"
       ],
       "users": [
         "autogroup:nonroot",
         "root"
       ]
     },
-    // SSH from work-tagged machines is implicitly denied (deny-by-default;
-    // no SSH accept rule exists for tag:work in this section).
+    // All other SSH is implicitly denied (deny-by-default; no accept rule for
+    // tag:work, tag:home, tag:lga1, tag:lga2, tag:container, etc.).
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
   "randomizeClientPort": true,
@@ -225,15 +212,16 @@
         "tag:home:443"
       ]
     },
-    // admin can connect to home but not work
+    // admin can SSH to all machines; cannot reach work data-plane (no grant)
     {
       "src": "tag:admin",
       "accept": [
         "tag:home:22",
-        "tag:home:80",
+        "tag:lga1:22",
+        "tag:lga2:22",
       ],
       "deny": [
-        "tag:work:22"
+        "tag:work:22",
       ],
     },
     // work can reach internet only, NOT home/lga1/k8s/other-work
