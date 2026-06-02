@@ -188,13 +188,8 @@
         "root"
       ]
     },
-    // Deny all SSH from work-tagged machines (intent: work is least-privilege)
-    {
-      "action": "deny",
-      "src": ["tag:work"],
-      "dst": ["*"],
-      "users": ["*"]
-    },
+    // SSH from work-tagged machines is implicitly denied (deny-by-default;
+    // no SSH accept rule exists for tag:work in this section).
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
   "randomizeClientPort": true,
