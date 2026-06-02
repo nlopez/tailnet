@@ -104,6 +104,20 @@
     },
   ],
   "grants": [
+    // Allow admin machines to reach home machines
+    {
+      "src": [
+        "tag:admin",
+        "autogroup:admin"
+      ],
+      "dst": [
+        "tag:home"
+      ],
+      "ip": [
+        "*"
+      ],
+    },
+    // Allow home-to-home
     {
       "src": [
         "tag:home"
@@ -201,8 +215,9 @@
         "root"
       ]
     },
-    { // Allow admin to ssh to home machines
-      "action": "accept",
+    { // Allow admin to ssh to home machines, MFA required on every connection
+      "action": "check",
+      "checkPeriod": "always",
       "src": [
         "tag:admin"
       ],
@@ -235,6 +250,15 @@
     {
       "target": ["tag:admin"],
       "attr":   ["funnel"],
+    },
+  ],
+  "sshTests": [
+    // Verify admin MFA is required on every SSH connection to home machines
+    {
+      "src": "tag:admin",
+      "dst": ["tag:home"],
+      "check": ["autogroup:nonroot", "root"],
+      "deny": [],
     },
   ],
   "tests": [
