@@ -181,10 +181,7 @@
       "dst": [
         "tag:home"
       ],
-      "users": [
-        "autogroup:nonroot",
-        "root"
-      ]
+      "users": ["*"]
     },
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
