@@ -199,9 +199,9 @@
     },
   ],
   "sshTests": [
-    // Verify self-SSH requires MFA check mode
+    // Verify self-SSH requires MFA check mode (use specific user, not autogroup)
     {
-      "src": "autogroup:member",
+      "src": "nlopez@github",
       "dst": ["autogroup:self"],
       "check": ["autogroup:nonroot", "root"],
       "deny": [],
