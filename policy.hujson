@@ -176,7 +176,7 @@
     { // nlopez admin ssh to home machines, MFA required on every connection
       "action": "check",
       "src": [
-        "nlopez@github"
+        "autogroup:member"
       ],
       "dst": [
         "tag:home"
@@ -210,9 +210,9 @@
     },
   ],
   "sshTests": [
-    // Verify check mode for nlopez SSH to home machines
+    // Verify check mode for any member SSH to home machines
     {
-      "src": "nlopez@github",
+      "src": "tag:admin",
       "dst": ["tag:home"],
       "check": ["autogroup:nonroot", "root"],
       "deny": [],
