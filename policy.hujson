@@ -209,15 +209,8 @@
       "attr":   ["funnel"],
     },
   ],
-  "sshTests": [
-    // Verify check mode for any member SSH to home machines
-    {
-      "src": "autogroup:member",
-      "dst": ["tag:home"],
-      "check": ["autogroup:nonroot", "root"],
-      "deny": [],
-    },
-  ],
+  // sshTests removed: autogroup:member not allowed as src in sshTests;
+  // self-SSH MFA handled by autogroup:member → autogroup:self check rule
   "tests": [
     // home machines can access common service ports on other home machines
     {
