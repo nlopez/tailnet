@@ -36,6 +36,11 @@
     "tag:k8s-readers": [
       "autogroup:admin"
     ],
+    // Exit nodes — tag:exit is additive; existing location tags (tag:home, tag:lga1, tag:lga2)
+    // must be preserved so subnet routing and autoApprovers still resolve.
+    "tag:exit": [
+      "autogroup:admin"
+    ],
   },
   // needs support service enablement
   "autoApprovers": {
@@ -77,35 +82,19 @@
       "dst": ["192.168.239.0/24"],
       "ip": ["*"],
     },
-    // Work machines → internet (exit node access)
+    // Work machines → internet (exit node access only, routed through tagged exit nodes)
+    // NOTE: tag:work machines MUST NOT carry tag:admin or tag:home (least-privilege)
     {
       "src": ["tag:work"],
       "dst": ["autogroup:internet"],
+      "via": ["tag:exit"],
       "ip": ["*"],
-    },
-    // Work machines → k8s API (tcp/6443)
-    {
-      "src": ["tag:work"],
-      "dst": ["ipset:k8s-api"],
-      "ip": ["tcp:6443"],
     },
     // lga2 → lga1 HTTPS
     {
       "src": ["tag:lga2"],
       "dst": ["tag:lga1"],
       "ip": ["tcp:443"],
-    },
-    // lga2 ↔ work Deskflow
-    {
-      "src": ["tag:lga2"],
-      "dst": ["tag:work"],
-      "ip": ["tcp:24800"],
-    },
-    // work → lga2 Deskflow
-    {
-      "src": ["tag:work"],
-      "dst": ["tag:lga2"],
-      "ip": ["tcp:24800"],
     },
     // home → home (all ports)
     {
@@ -199,6 +188,13 @@
         "root"
       ]
     },
+    // Deny all SSH from work-tagged machines (intent: work is least-privilege)
+    {
+      "action": "deny",
+      "src": ["tag:work"],
+      "dst": ["*"],
+      "users": ["*"]
+    },
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
   "randomizeClientPort": true,
@@ -245,31 +241,20 @@
         "tag:work:22"
       ],
     },
-    // work can reach internet and k8s api, but not home
+    // work can reach internet only, NOT home/lga1/k8s/other-work
     {
       "src": "tag:work",
       "accept": [
-        "192.168.222.245:6443",
         "1.1.1.1:53",
       ],
       "deny": [
-        "tag:home:22",
-        "tag:home:80",
+        "tag:home:*",
+        "tag:lga1:*",
+        "tag:work:*",
+        "tag:k8s-operator:*",
       ],
     },
-    // lga2 ↔ work Deskflow (tcp/24800)
-    {
-      "src": "tag:lga2",
-      "accept": [
-        "tag:work:24800",
-      ],
-    },
-    {
-      "src": "tag:work",
-      "accept": [
-        "tag:lga2:24800",
-      ],
-    },
+
     // k8s-readers can connect to k8s operator
     {
       "src": "nlopez@github",
