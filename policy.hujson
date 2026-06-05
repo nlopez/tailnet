@@ -78,10 +78,17 @@
       ],
       "ip": ["*"],
     },
-    // Admin machines → internet (exit node access, redundant with blanket grant)
+    // Admin machines → internet (direct, redundant with blanket grant)
     {
       "src": ["tag:admin", "autogroup:admin"],
       "dst": ["autogroup:internet"],
+      "ip": ["*"],
+    },
+    // Admin machines → internet via exit nodes
+    {
+      "src": ["tag:admin", "autogroup:admin"],
+      "dst": ["autogroup:internet"],
+      "via": ["tag:exit"],
       "ip": ["*"],
     },
     // Work machines → internet (exit node access only, routed through tagged exit nodes)
@@ -218,7 +225,7 @@
         "tag:home:443"
       ]
     },
-    // admin can SSH to all tagged machines except tag:work
+    // admin can SSH to all tagged machines except tag:work, and can use exit nodes
     {
       "src": "tag:admin",
       "accept": [
@@ -229,6 +236,7 @@
         "tag:admin:22",
         "tag:container:22",
         "tag:exit:22",
+        "1.1.1.1:53",
       ],
       "deny": [
         "tag:work:22",
