@@ -47,3 +47,41 @@ jobs:
           tailnet: ${{ secrets.TS_TAILNET }}
           policy-file: policy.hujson
           action: apply
+
+      - name: Notify Discord
+        if: always() && github.event_name == 'push'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "DISCORD_WEBHOOK_URL secret not set — skipping Discord notification"
+            exit 0
+          fi
+          if [ "$JOB_STATUS" = "success" ]; then
+            color=10181862
+            emoji="✅"
+            status="Passed"
+          else
+            color=15158332
+            emoji="❌"
+            status="Failed"
+          fi
+          commit_sha=$(git log -1 --format='%h')
+          curl -s -X POST "$DISCORD_WEBHOOK" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"Sync Tailscale ACLs $emoji\",
+                \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\",
+                \"color\": $color,
+                \"fields\": [
+                  { \"name\": \"Branch\", \"value\": \"\`$GITHUB_REF_NAME\`\", \"inline\": true },
+                  { \"name\": \"Commit\", \"value\": \"\`$commit_sha\`\", \"inline\": true },
+                  { \"name\": \"Author\", \"value\": \"\`$GITHUB_ACTOR\`\", \"inline\": true },
+                  { \"name\": \"Status\", \"value\": \"$status\" }
+                ],
+                \"footer\": { \"text\": \"Run #${{ github.run_number }}\" },
+                \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+              }]
+            }"
