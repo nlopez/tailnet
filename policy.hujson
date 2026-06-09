@@ -75,6 +75,8 @@
         "tag:admin",
         "tag:container",
         "tag:exit",
+        "ipset:lga1",
+        "ipset:lga2",
       ],
       "ip": ["*"],
     },
