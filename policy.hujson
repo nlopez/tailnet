@@ -276,7 +276,8 @@
         "tag:work"
       ],
       "attr": [
-        "nextdns:37848c"
+        "nextdns:37848c",
+        "disable-ipv4",
       ]
     },
     {
