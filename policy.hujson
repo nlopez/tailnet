@@ -267,7 +267,7 @@
     },
   ],
   // https://tailscale.com/kb/1337/acl-syntax#randomizeclientport
-  "randomizeClientPort": false,
+  "randomizeClientPort": true,
   "nodeAttrs": [
     // Use Work NextDNS profile for work tagged Tailscale machines
     // https://tailscale.com/kb/1218/nextdns#use-different-nextdns-profiles-for-different-devices
