@@ -359,6 +359,15 @@
       "accept": [
         "tag:k8s-operator:443",
       ],
+    },
+    // admin can reach all ipset:lga1 subnets (192.168.221-223.0/24)
+    {
+      "src": "tag:admin",
+      "accept": [
+        "192.168.221.1:22",
+        "192.168.222.1:22",
+        "192.168.223.1:22",
+      ],
     }
   ],
 }
