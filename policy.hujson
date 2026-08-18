@@ -55,24 +55,6 @@
         "tag:lga2",
         "autogroup:admin"
       ],
-      // lga1 LAN + k8s pod range — mirrors lga2's auto-approval so lga1's
-      // subnet router doesn't need manual re-approval in the admin console.
-      "192.168.221.0/24": [
-        "tag:lga1",
-        "autogroup:admin"
-      ],
-      "192.168.222.0/24": [
-        "tag:lga1",
-        "autogroup:admin"
-      ],
-      "192.168.223.0/24": [
-        "tag:lga1",
-        "autogroup:admin"
-      ],
-      "10.43.0.0/16": [
-        "tag:lga1",
-        "autogroup:admin"
-      ],
     },
   },
   "grants": [
@@ -154,30 +136,16 @@
         "*"
       ],
     },
-    // Site-to-site: lga1 LAN ↔ lga2 LAN (bidirectional, full IP).
-    // Targets the ipsets (actual subnet-router CIDRs) rather than the tags,
-    // so any host on either LAN can reach the other — not just tagged devices.
-    // Supersedes the old tag:lga2 → tag:lga1 tcp:443-only rule.
+    // lga2 → lga1 HTTPS
     {
       "src": [
-        "ipset:lga1"
+        "tag:lga2"
       ],
       "dst": [
-        "ipset:lga2"
+        "tag:lga1"
       ],
       "ip": [
-        "*"
-      ],
-    },
-    {
-      "src": [
-        "ipset:lga2"
-      ],
-      "dst": [
-        "ipset:lga1"
-      ],
-      "ip": [
-        "*"
+        "tcp:443"
       ],
     },
     // home → home (all ports)
@@ -341,22 +309,6 @@
         "tag:home:80",
         "tag:home:443"
       ]
-    },
-    // site-to-site: lga1 subnet router can reach hosts on the lga2 LAN
-    {
-      "src": "tag:lga1",
-      "accept": [
-        "192.168.239.254:22",
-        "192.168.239.2:22",
-      ],
-    },
-    // site-to-site: lga2 subnet router can reach hosts on the lga1 LAN
-    {
-      "src": "tag:lga2",
-      "accept": [
-        "192.168.222.1:22",
-        "192.168.222.2:22",
-      ],
     },
     // admin can SSH to all tagged machines except tag:work, and can use exit nodes
     {
