@@ -136,6 +136,18 @@
         "*"
       ],
     },
+    // Work machines → 10.43.64.0/24 (explicit LAN carve-out, in addition to internet-only default)
+    {
+      "src": [
+        "tag:work"
+      ],
+      "dst": [
+        "10.43.64.0/24"
+      ],
+      "ip": [
+        "*"
+      ],
+    },
     // lga2 → lga1 HTTPS
     {
       "src": [
@@ -327,11 +339,13 @@
         "tag:work:22",
       ],
     },
-    // work can reach internet only, NOT home/lga1/k8s/other-work
+    // work can reach internet and 10.43.64.0/24, NOT home/lga1/k8s/other-work
     {
       "src": "tag:work",
       "accept": [
         "1.1.1.1:53",
+        "10.43.64.1:22",
+        "10.43.64.1:443",
       ],
       "deny": [
         "tag:home:22",
