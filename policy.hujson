@@ -85,16 +85,20 @@
     },
   },
   "grants": [
-    // autogroup:member -> tag:derp, DERP/STUN ports only.
+    // autogroup:member + autogroup:tagged -> tag:derp, DERP/STUN ports only.
     // --verify-clients requires "all clients must be visible to the derper
     // tailscaled in the ACL" (cmd/derper docs) — visibility follows from any
     // grant connecting the pair, not from a wildcard ip or a reverse grant,
     // so this is scoped to the actual relay ports instead of ip:"*" both
-    // ways. Narrowed from an earlier ip:"*" bidirectional version pending
-    // confirmation that --verify-clients still passes with this scope.
+    // ways. autogroup:member alone only covers untagged, user-owned devices
+    // (confirmed live: the derp node's netmap showed just 2 personal iOS
+    // devices) — nearly everything else in this tailnet is tagged
+    // (tag:home, tag:admin, tag:lga1, tag:lga2, tag:work, tag:k8s*, etc.),
+    // so autogroup:tagged is required too for those to be visible.
     {
       "src": [
-        "autogroup:member"
+        "autogroup:member",
+        "autogroup:tagged"
       ],
       "dst": [
         "tag:derp"
