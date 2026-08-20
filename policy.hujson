@@ -57,6 +57,14 @@
       ],
     },
   },
+  // Disable DERP relays tailnet-wide: no regions defined and default
+  // Tailscale-operated regions omitted, so peers that can't establish a
+  // direct/NAT-traversed connection will have no relay fallback.
+  // https://tailscale.com/kb/1118/custom-derp-servers/
+  "derpMap": {
+    "OmitDefaultRegions": true,
+    "Regions": {},
+  },
   "grants": [
     // All tailnet members → their own devices
     {
