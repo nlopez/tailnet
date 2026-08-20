@@ -57,13 +57,28 @@
       ],
     },
   },
-  // Disable DERP relays tailnet-wide: no regions defined and default
-  // Tailscale-operated regions omitted, so peers that can't establish a
-  // direct/NAT-traversed connection will have no relay fallback.
+  // Replace Tailscale's default DERP relays with our own self-hosted region.
+  // Tailscale rejects OmitDefaultRegions with no replacement regions, so a
+  // true zero-relay config isn't possible — this is the closest equivalent:
+  // the only relay fallback is the server we control.
   // https://tailscale.com/kb/1118/custom-derp-servers/
   "derpMap": {
     "OmitDefaultRegions": true,
-    "Regions": {},
+    "Regions": {
+      "900": {
+        "RegionID": 900,
+        "RegionCode": "dsbluffs",
+        "RegionName": "Desert Bluffs",
+        "Nodes": [
+          {
+            "Name": "900a",
+            "RegionID": 900,
+            "HostName": "derp.desertbluffs.com",
+            "DERPPort": 8443,
+          },
+        ],
+      },
+    },
   },
   "grants": [
     // All tailnet members → their own devices
