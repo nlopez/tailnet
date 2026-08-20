@@ -85,33 +85,27 @@
     },
   },
   "grants": [
-    // tag:derp <-> everyone, full bidirectional netmap visibility.
-    // --verify-clients on the derp relay checks incoming connections against
-    // its own tailscaled netmap; ACLs control peer visibility, so without a
-    // grant in both directions the relay's netmap is empty and it rejects
-    // every client as unknown. This mirrors the legacy-ACL equivalent:
-    //   {"action": "accept", "src": ["tag:derp"], "dst": ["*:*"]}
-    //   {"action": "accept", "src": ["*"],        "dst": ["tag:derp:*"]}
+    // autogroup:member + autogroup:tagged -> tag:derp, DERP/STUN ports only.
+    // --verify-clients requires "all clients must be visible to the derper
+    // tailscaled in the ACL" (cmd/derper docs) — visibility follows from any
+    // grant connecting the pair, not from a wildcard ip or a reverse grant,
+    // so this is scoped to the actual relay ports instead of ip:"*" both
+    // ways. autogroup:member alone only covers untagged, user-owned devices
+    // (confirmed live: the derp node's netmap showed just 2 personal iOS
+    // devices) — nearly everything else in this tailnet is tagged
+    // (tag:home, tag:admin, tag:lga1, tag:lga2, tag:work, tag:k8s*, etc.),
+    // so autogroup:tagged is required too for those to be visible.
     {
       "src": [
-        "autogroup:member"
+        "autogroup:member",
+        "autogroup:tagged"
       ],
       "dst": [
         "tag:derp"
       ],
       "ip": [
-        "*"
-      ],
-    },
-    {
-      "src": [
-        "tag:derp"
-      ],
-      "dst": [
-        "autogroup:member"
-      ],
-      "ip": [
-        "*"
+        "tcp:8443",
+        "udp:3478"
       ],
     },
     // All tailnet members → their own devices
