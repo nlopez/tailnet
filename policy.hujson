@@ -41,6 +41,10 @@
     "tag:exit": [
       "autogroup:admin"
     ],
+    // Self-hosted DERP relay (derp.desertbluffs.com) running with --verify-clients.
+    "tag:derp": [
+      "autogroup:admin"
+    ],
   },
   // needs support service enablement
   "autoApprovers": {
@@ -81,6 +85,35 @@
     },
   },
   "grants": [
+    // tag:derp <-> everyone, full bidirectional netmap visibility.
+    // --verify-clients on the derp relay checks incoming connections against
+    // its own tailscaled netmap; ACLs control peer visibility, so without a
+    // grant in both directions the relay's netmap is empty and it rejects
+    // every client as unknown. This mirrors the legacy-ACL equivalent:
+    //   {"action": "accept", "src": ["tag:derp"], "dst": ["*:*"]}
+    //   {"action": "accept", "src": ["*"],        "dst": ["tag:derp:*"]}
+    {
+      "src": [
+        "autogroup:member"
+      ],
+      "dst": [
+        "tag:derp"
+      ],
+      "ip": [
+        "*"
+      ],
+    },
+    {
+      "src": [
+        "tag:derp"
+      ],
+      "dst": [
+        "autogroup:member"
+      ],
+      "ip": [
+        "*"
+      ],
+    },
     // All tailnet members → their own devices
     {
       "src": [
