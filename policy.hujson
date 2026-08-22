@@ -41,10 +41,6 @@
     "tag:exit": [
       "autogroup:admin"
     ],
-    // Self-hosted DERP relay (derp.desertbluffs.com) running with --verify-clients.
-    "tag:derp": [
-      "autogroup:admin"
-    ],
   },
   // needs support service enablement
   "autoApprovers": {
@@ -59,29 +55,6 @@
         "tag:lga2",
         "autogroup:admin"
       ],
-    },
-  },
-  // Replace Tailscale's default DERP relays with our own self-hosted region.
-  // Tailscale rejects OmitDefaultRegions with no replacement regions, so a
-  // true zero-relay config isn't possible — this is the closest equivalent:
-  // the only relay fallback is the server we control.
-  // https://tailscale.com/kb/1118/custom-derp-servers/
-  "derpMap": {
-    "OmitDefaultRegions": true,
-    "Regions": {
-      "900": {
-        "RegionID": 900,
-        "RegionCode": "dsbluffs",
-        "RegionName": "Desert Bluffs",
-        "Nodes": [
-          {
-            "Name": "900a",
-            "RegionID": 900,
-            "HostName": "derp.desertbluffs.com",
-            "DERPPort": 8443,
-          },
-        ],
-      },
     },
   },
   "grants": [
