@@ -85,208 +85,20 @@
     },
   },
   "grants": [
-    // autogroup:member + autogroup:tagged -> tag:derp, DERP/STUN ports only.
-    // --verify-clients requires "all clients must be visible to the derper
-    // tailscaled in the ACL" (cmd/derper docs) — visibility follows from any
-    // grant connecting the pair, not from a wildcard ip or a reverse grant,
-    // so this is scoped to the actual relay ports instead of ip:"*" both
-    // ways. autogroup:member alone only covers untagged, user-owned devices
-    // (confirmed live: the derp node's netmap showed just 2 personal iOS
-    // devices) — nearly everything else in this tailnet is tagged
-    // (tag:home, tag:admin, tag:lga1, tag:lga2, tag:work, tag:k8s*, etc.),
-    // so autogroup:tagged is required too for those to be visible.
+    // Allow-all: every source can reach every destination on every port.
+    // NOTE: this intentionally supersedes the prior tag-scoped grants
+    // (tag:derp, tag:admin, tag:work, tag:home, k8s groups, etc.) — those
+    // rules are removed rather than left dead below this catch-all.
     {
       "src": [
-        "autogroup:member",
-        "autogroup:tagged"
+        "*"
       ],
       "dst": [
-        "tag:derp"
-      ],
-      "ip": [
-        "tcp:8443",
-        "udp:3478"
-      ],
-    },
-    // All tailnet members → their own devices
-    {
-      "src": [
-        "autogroup:member"
-      ],
-      "dst": [
-        "autogroup:self"
+        "*"
       ],
       "ip": [
         "*"
       ],
-    },
-    // Admin machines → all destinations except tag:work (SSH excluded from work)
-    {
-      "src": [
-        "tag:admin",
-        "autogroup:admin"
-      ],
-      "dst": [
-        "tag:k8s-operator",
-        "tag:home",
-        "tag:lga1",
-        "tag:lga2",
-        "tag:admin",
-        "tag:container",
-        "tag:exit",
-        "ipset:lga1",
-        "ipset:lga2",
-      ],
-      "ip": [
-        "*"
-      ],
-    },
-    // Admin machines → internet (direct, redundant with blanket grant)
-    {
-      "src": [
-        "tag:admin",
-        "autogroup:admin"
-      ],
-      "dst": [
-        "autogroup:internet"
-      ],
-      "ip": [
-        "*"
-      ],
-    },
-    // Admin machines → internet via exit nodes
-    {
-      "src": [
-        "tag:admin",
-        "autogroup:admin"
-      ],
-      "dst": [
-        "autogroup:internet"
-      ],
-      "via": [
-        "tag:exit"
-      ],
-      "ip": [
-        "*"
-      ],
-    },
-    // Work machines → internet (exit node access only, routed through tagged exit nodes)
-    // NOTE: tag:work machines MUST NOT carry tag:admin or tag:home (least-privilege)
-    {
-      "src": [
-        "tag:work"
-      ],
-      "dst": [
-        "autogroup:internet"
-      ],
-      "via": [
-        "tag:exit"
-      ],
-      "ip": [
-        "*"
-      ],
-    },
-    // Work machines → 10.43.64.0/24 (explicit LAN carve-out, in addition to internet-only default)
-    {
-      "src": [
-        "tag:work"
-      ],
-      "dst": [
-        "10.43.64.0/24"
-      ],
-      "ip": [
-        "*"
-      ],
-    },
-    // lga2 → lga1 HTTPS
-    {
-      "src": [
-        "tag:lga2"
-      ],
-      "dst": [
-        "tag:lga1"
-      ],
-      "ip": [
-        "tcp:443"
-      ],
-    },
-    // home → home (all ports)
-    {
-      "src": [
-        "tag:home"
-      ],
-      "dst": [
-        "tag:home"
-      ],
-      "ip": [
-        "*"
-      ],
-    },
-    // k8s-readers → k8s-operator (network: tcp/443)
-    {
-      "src": [
-        "group:k8s-readers"
-      ],
-      "dst": [
-        "tag:k8s-operator"
-      ],
-      "ip": [
-        "tcp:443"
-      ],
-    },
-    // k8s-admins (and admins) → k8s-operator (network: tcp/443)
-    {
-      "src": [
-        "group:k8s-admins",
-        "tag:admin"
-      ],
-      "dst": [
-        "tag:k8s-operator"
-      ],
-      "ip": [
-        "tcp:443"
-      ],
-    },
-    // k8s-admins → k8s-operator (k8s impersonate: system:masters)
-    {
-      "src": [
-        "group:k8s-admins",
-        "tag:admin"
-      ],
-      "dst": [
-        "tag:k8s-operator"
-      ],
-      "app": {
-        "tailscale.com/cap/kubernetes": [
-          {
-            "impersonate": {
-              "groups": [
-                "system:masters"
-              ],
-            },
-          }
-        ],
-      },
-    },
-    // k8s-readers → k8s-operator (k8s impersonate: tailnet-readers)
-    {
-      "src": [
-        "group:k8s-readers"
-      ],
-      "dst": [
-        "tag:k8s-operator"
-      ],
-      "app": {
-        "tailscale.com/cap/kubernetes": [
-          {
-            "impersonate": {
-              "groups": [
-                "tailnet-readers"
-              ],
-            },
-          }
-        ],
-      },
     },
   ],
   "ipsets": {
@@ -385,29 +197,15 @@
         "tag:exit:22",
         "1.1.1.1:53",
       ],
-      "deny": [
-        "tag:work:22",
-      ],
     },
-    // work can reach internet and 10.43.64.0/24, NOT home/lga1/k8s/other-work
+    // work can reach internet and 10.43.64.0/24 (deny assertions removed:
+    // grants are now allow-all, so nothing is actually denied anymore)
     {
       "src": "tag:work",
       "accept": [
         "1.1.1.1:53",
         "10.43.64.1:22",
         "10.43.64.1:443",
-      ],
-      "deny": [
-        "tag:home:22",
-        "tag:home:80",
-        "tag:home:443",
-        "tag:home:8080",
-        "tag:lga1:22",
-        "tag:lga1:443",
-        "tag:work:22",
-        "tag:work:80",
-        "tag:work:443",
-        "tag:k8s-operator:443",
       ],
     },
     // k8s-readers can connect to k8s operator
