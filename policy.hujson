@@ -59,7 +59,7 @@
   },
   "grants": [
     // Allow-all: every source can reach every destination on every port.
-    // NOTE: this intentionally supersedes the prior tag-scoped grants
+    // NOTE: this intentionally supersedes the prior tag-scoped network grants
     // (tag:derp, tag:admin, tag:work, tag:home, k8s groups, etc.) — those
     // rules are removed rather than left dead below this catch-all.
     {
@@ -72,6 +72,50 @@
       "ip": [
         "*"
       ],
+    },
+    // k8s-admins → k8s-operator (k8s impersonate: system:masters)
+    // Capability grants are NOT implied by the network allow-all above —
+    // the tailscale.com/cap/kubernetes app capability must be granted
+    // explicitly for the k8s operator to allow RBAC impersonation.
+    {
+      "src": [
+        "group:k8s-admins",
+        "tag:admin"
+      ],
+      "dst": [
+        "tag:k8s-operator"
+      ],
+      "app": {
+        "tailscale.com/cap/kubernetes": [
+          {
+            "impersonate": {
+              "groups": [
+                "system:masters"
+              ],
+            },
+          }
+        ],
+      },
+    },
+    // k8s-readers → k8s-operator (k8s impersonate: tailnet-readers)
+    {
+      "src": [
+        "group:k8s-readers"
+      ],
+      "dst": [
+        "tag:k8s-operator"
+      ],
+      "app": {
+        "tailscale.com/cap/kubernetes": [
+          {
+            "impersonate": {
+              "groups": [
+                "tailnet-readers"
+              ],
+            },
+          }
+        ],
+      },
     },
   ],
   "ipsets": {
