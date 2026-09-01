@@ -58,23 +58,64 @@
     },
   },
   "grants": [
-    // Allow-all: every source can reach every destination on every port.
-    // NOTE: this intentionally supersedes the prior tag-scoped network grants
-    // (tag:derp, tag:admin, tag:work, tag:home, k8s groups, etc.) — those
-    // rules are removed rather than left dead below this catch-all.
+    // Non-work mesh: every non-work principal can reach every other non-work
+    // principal (and the internet) on every port. tag:work is deliberately
+    // absent from both src and dst — Tailscale grants have no negation, so
+    // isolating work means enumerating everything that is NOT work here
+    // rather than writing "* except tag:work". Keep this src/dst list in sync
+    // with tagOwners when adding a new non-work tag.
     {
       "src": [
-        "*"
+        "autogroup:member",
+        "tag:admin",
+        "tag:home",
+        "tag:lga1",
+        "tag:lga2",
+        "tag:container",
+        "tag:k8s",
+        "tag:k8s-operator",
+        "tag:k8s-readers",
+        "tag:exit"
       ],
       "dst": [
+        "autogroup:member",
+        "autogroup:internet",
+        "tag:admin",
+        "tag:home",
+        "tag:lga1",
+        "tag:lga2",
+        "tag:container",
+        "tag:k8s",
+        "tag:k8s-operator",
+        "tag:k8s-readers",
+        "tag:exit",
+        "ipset:lga1",
+        "ipset:lga2",
+      ],
+      "ip": [
         "*"
+      ],
+    },
+    // Work machines → internet via tagged exit nodes ONLY. This is the sole
+    // grant that references tag:work as a src, and nothing grants tag:work as
+    // a dst — so all other tailnet traffic to and from work-tagged nodes is
+    // denied. tag:work machines MUST NOT also carry tag:admin/tag:home/etc.
+    {
+      "src": [
+        "tag:work"
+      ],
+      "dst": [
+        "autogroup:internet"
+      ],
+      "via": [
+        "tag:exit"
       ],
       "ip": [
         "*"
       ],
     },
     // k8s-admins → k8s-operator (k8s impersonate: system:masters)
-    // Capability grants are NOT implied by the network allow-all above —
+    // Capability grants are NOT implied by the network grants above —
     // the tailscale.com/cap/kubernetes app capability must be granted
     // explicitly for the k8s operator to allow RBAC impersonation.
     {
@@ -215,14 +256,29 @@
         "1.1.1.1:53",
       ],
     },
-    // work can reach internet and 10.43.64.0/24 (deny assertions removed:
-    // grants are now allow-all, so nothing is actually denied anymore)
+    // work can only reach the internet (via exit nodes); all other tailnet
+    // traffic to/from work-tagged nodes is denied — no LAN, no home, no k8s,
+    // no other work.
     {
       "src": "tag:work",
       "accept": [
         "1.1.1.1:53",
+      ],
+      "deny": [
         "10.43.64.1:22",
         "10.43.64.1:443",
+        "tag:home:22",
+        "tag:home:80",
+        "tag:home:443",
+        "tag:home:8080",
+        "tag:lga1:22",
+        "tag:lga1:443",
+        "tag:lga2:443",
+        "tag:work:22",
+        "tag:work:80",
+        "tag:work:443",
+        "tag:k8s-operator:443",
+        "tag:admin:22",
       ],
     },
     // k8s-readers can connect to k8s operator
