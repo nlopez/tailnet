@@ -55,6 +55,13 @@
         "tag:lga2",
         "autogroup:admin"
       ],
+      // k8s LoadBalancer service subnet, advertised by the k8s-operator subnet
+      // router. Auto-approving the route (rather than just granting network
+      // access) is what actually makes it reachable tailnet-wide — the
+      // allow-all grant below already permits every src, including tag:work.
+      "10.43.64.0/24": [
+        "tag:k8s-operator"
+      ],
     },
   },
   "grants": [
@@ -215,13 +222,29 @@
         "1.1.1.1:53",
       ],
     },
-    // work can reach internet and 10.43.64.0/24 (deny assertions removed:
-    // grants are now allow-all, so nothing is actually denied anymore)
+    // work can reach internet and the k8s LoadBalancer subnet 10.43.64.0/24
+    // (deny assertions removed: grants are now allow-all, so nothing is
+    // actually denied anymore)
     {
       "src": "tag:work",
       "accept": [
         "1.1.1.1:53",
         "10.43.64.1:22",
+        "10.43.64.1:443",
+        "10.43.64.100:443",
+      ],
+    },
+    // all devices can reach the k8s LoadBalancer subnet 10.43.64.0/24, not
+    // just tag:work
+    {
+      "src": "tag:admin",
+      "accept": [
+        "10.43.64.1:443",
+      ],
+    },
+    {
+      "src": "tag:home",
+      "accept": [
         "10.43.64.1:443",
       ],
     },
