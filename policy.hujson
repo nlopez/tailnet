@@ -80,6 +80,18 @@
         "*"
       ],
     },
+    // Allow any tailnet member to connect to 10.43.64.10 on any port
+    {
+      "src": [
+        "*"
+      ],
+      "dst": [
+        "10.43.64.10"
+      ],
+      "ip": [
+        "*"
+      ],
+    },
     // k8s-admins → k8s-operator (k8s impersonate: system:masters)
     // Capability grants are NOT implied by the network allow-all above —
     // the tailscale.com/cap/kubernetes app capability must be granted
