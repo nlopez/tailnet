@@ -92,6 +92,21 @@
         "*"
       ],
     },
+    // Allow every source (including tag:work) to send DNS queries to the
+    // internal resolvers: 192.168.239.2 (lga2) and 192.168.222.2 (lga1)
+    {
+      "src": [
+        "*"
+      ],
+      "dst": [
+        "192.168.239.2",
+        "192.168.222.2"
+      ],
+      "ip": [
+        "udp:53",
+        "tcp:53"
+      ],
+    },
     // k8s-admins → k8s-operator (k8s impersonate: system:masters)
     // Capability grants are NOT implied by the network allow-all above —
     // the tailscale.com/cap/kubernetes app capability must be granted
@@ -258,6 +273,28 @@
       "src": "tag:home",
       "accept": [
         "10.43.64.1:443",
+      ],
+    },
+    // all devices (incl. tag:work) can query the internal DNS resolvers
+    {
+      "src": "tag:work",
+      "accept": [
+        "192.168.239.2:53",
+        "192.168.222.2:53",
+      ],
+    },
+    {
+      "src": "tag:admin",
+      "accept": [
+        "192.168.239.2:53",
+        "192.168.222.2:53",
+      ],
+    },
+    {
+      "src": "tag:home",
+      "accept": [
+        "192.168.239.2:53",
+        "192.168.222.2:53",
       ],
     },
     // k8s-readers can connect to k8s operator
