@@ -173,8 +173,7 @@
   "ssh": [
     // ssh: only tag:admin machines can SSH as root or any non-root user; excluded: tag:work
     {
-      "action": "check",
-      "checkPeriod": "1h",
+      "action": "accept",
       "src": [
         "tag:admin"
       ],
