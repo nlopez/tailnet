@@ -171,9 +171,9 @@
     ],
   },
   "ssh": [
-    // ssh: only tag:admin machines can SSH as any non-root user; excluded: tag:work
+    // ssh: only tag:admin machines can SSH as root or any non-root user; excluded: tag:work
     {
-      "action": "accept",
+      "action": "check",
       "src": [
         "tag:admin"
       ],
@@ -187,7 +187,8 @@
         "tag:exit",
       ],
       "users": [
-        "autogroup:nonroot"
+        "autogroup:nonroot",
+        "root"
       ]
     },
   ],
