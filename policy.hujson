@@ -70,7 +70,7 @@
       // 4via6 form of the same subnet (site ID 1), for devices that cannot
       // use the IPv4 route (overlapping LANs, tag:work has disable-ipv4).
       "fd7a:115c:a1e0:b1a:0:1:a2b:4000/120": [
-        "tag:k8s-operator"
+        "tag:lga1"
       ],
     },
   },
@@ -106,10 +106,13 @@
         "*"
       ],
       "dst": [
-        "fd7a:115c:a1e0:b1a:0:1:10.43.64.0/120"
+        "fd7a:115c:a1e0:b1a:0:1:a2b:4000/120"
       ],
       "ip": [
         "*"
+      ],
+      "via": [
+        "tag:lga1"
       ],
     },
     // k8s-admins → k8s-operator (k8s impersonate: system:masters)
