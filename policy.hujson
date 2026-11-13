@@ -67,16 +67,18 @@
       "10.43.64.0/24": [
         "tag:k8s-operator"
       ],
+      // 4via6 form of the same subnet (site ID 1), for devices that cannot
+      // use the IPv4 route (overlapping LANs, tag:work has disable-ipv4).
+      "fd7a:115c:a1e0:b1a:0:1:a2b:4000/120": [
+        "tag:k8s-operator"
+      ],
     },
   },
   "grants": [
-    // Allow-all: every source can reach every destination on every port.
-    // NOTE: this intentionally supersedes the prior tag-scoped network grants
-    // (tag:derp, tag:admin, tag:work, tag:home, k8s groups, etc.) — those
-    // rules are removed rather than left dead below this catch-all.
+    // Default deny: only tag:admin can reach every destination on every port.
     {
       "src": [
-        "*"
+        "tag:admin"
       ],
       "dst": [
         "*"
@@ -85,31 +87,18 @@
         "*"
       ],
     },
-    // Allow any tailnet member to connect to 10.43.64.10 on any port
+    // Every device can reach the internal envoy gateway (k8s LoadBalancer
+    // subnet, advertised by the k8s-operator subnet router).
     {
       "src": [
         "*"
       ],
       "dst": [
-        "10.43.64.10"
+        "10.43.64.0/24",
+        "fd7a:115c:a1e0:b1a:0:1:a2b:4000/120"
       ],
       "ip": [
         "*"
-      ],
-    },
-    // Allow every source (including tag:work) to send DNS queries to the
-    // internal resolvers: 192.168.239.2 (lga2) and 192.168.222.2 (lga1)
-    {
-      "src": [
-        "*"
-      ],
-      "dst": [
-        "192.168.239.2",
-        "192.168.222.2"
-      ],
-      "ip": [
-        "udp:53",
-        "tcp:53"
       ],
     },
     // k8s-admins → k8s-operator (k8s impersonate: system:masters)
@@ -232,16 +221,7 @@
   // sshTests removed: autogroup:member not allowed as src in sshTests;
   // self-SSH MFA handled by autogroup:member → autogroup:self check rule
   "tests": [
-    // home machines can access common service ports on other home machines
-    {
-      "src": "tag:home",
-      "accept": [
-        "tag:home:8080",
-        "tag:home:80",
-        "tag:home:443"
-      ]
-    },
-    // admin can SSH to all tagged machines except tag:work, and can use exit nodes
+    // admin can reach everything
     {
       "src": "tag:admin",
       "accept": [
@@ -253,79 +233,53 @@
         "tag:container:22",
         "tag:exit:22",
         "tag:timekeeper:22",
-        "1.1.1.1:53",
-      ],
-    },
-    // work can reach internet and the k8s LoadBalancer subnet 10.43.64.0/24
-    // (deny assertions removed: grants are now allow-all, so nothing is
-    // actually denied anymore)
-    {
-      "src": "tag:work",
-      "accept": [
-        "1.1.1.1:53",
-        "10.43.64.1:22",
-        "10.43.64.1:443",
-        "10.43.64.100:443",
-      ],
-    },
-    // all devices can reach the k8s LoadBalancer subnet 10.43.64.0/24, not
-    // just tag:work
-    {
-      "src": "tag:admin",
-      "accept": [
-        "10.43.64.1:443",
-      ],
-    },
-    {
-      "src": "tag:home",
-      "accept": [
-        "10.43.64.1:443",
-      ],
-    },
-    // all devices (incl. tag:work) can query the internal DNS resolvers
-    {
-      "src": "tag:work",
-      "accept": [
-        "192.168.239.2:53",
-        "192.168.222.2:53",
-      ],
-    },
-    {
-      "src": "tag:admin",
-      "accept": [
-        "192.168.239.2:53",
-        "192.168.222.2:53",
-      ],
-    },
-    {
-      "src": "tag:home",
-      "accept": [
-        "192.168.239.2:53",
-        "192.168.222.2:53",
-      ],
-    },
-    // k8s-readers can connect to k8s operator
-    {
-      "src": "nlopez@github",
-      "accept": [
+        "tag:work:22",
         "tag:k8s-operator:443",
-      ],
-    },
-    // admin can connect to k8s operator
-    {
-      "src": "tag:admin",
-      "accept": [
-        "tag:k8s-operator:443",
-      ],
-    },
-    // admin can reach all ipset:lga1 subnets (192.168.221-223.0/24)
-    {
-      "src": "tag:admin",
-      "accept": [
+        "1.1.1.1:53",
         "192.168.221.1:22",
         "192.168.222.1:22",
         "192.168.223.1:22",
       ],
-    }
+    },
+    // every non-admin device can reach the envoy gateway and nothing else on
+    // the tailnet
+    {
+      "src": "tag:work",
+      "accept": [
+        "10.43.64.10:443",
+        "10.43.64.1:443",
+        "[fd7a:115c:a1e0:b1a:0:1:a2b:400a]:443",
+      ],
+      "deny": [
+        "192.168.239.2:53",
+        "tag:home:22",
+        "tag:home:443",
+        "tag:admin:22",
+        "tag:k8s-operator:443",
+      ],
+    },
+    {
+      "src": "tag:home",
+      "accept": [
+        "10.43.64.10:443",
+      ],
+      "deny": [
+        "tag:home:8080",
+        "tag:home:80",
+        "tag:home:443",
+        "tag:work:22",
+        "tag:admin:22",
+      ],
+    },
+    {
+      "src": "tag:container",
+      "accept": [
+        "10.43.64.10:443",
+      ],
+      "deny": [
+        "tag:home:22",
+        "tag:admin:22",
+      ],
+    },
   ],
 }
