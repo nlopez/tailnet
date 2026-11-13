@@ -115,6 +115,18 @@
         "tag:lga1"
       ],
     },
+    // Work machines can use exit nodes (internet access only).
+    {
+      "src": [
+        "tag:work"
+      ],
+      "dst": [
+        "autogroup:internet"
+      ],
+      "ip": [
+        "*"
+      ],
+    },
     // k8s-admins → k8s-operator (k8s impersonate: system:masters)
     // Capability grants are NOT implied by the network allow-all above —
     // the tailscale.com/cap/kubernetes app capability must be granted
@@ -262,6 +274,7 @@
       "accept": [
         "10.43.64.10:443",
         "10.43.64.1:443",
+        "1.1.1.1:53",
       ],
       "deny": [
         "192.168.239.2:53",
