@@ -65,7 +65,18 @@
       // access) is what actually makes it reachable tailnet-wide — the
       // allow-all grant below already permits every src, including tag:work.
       "10.43.64.0/24": [
-        "tag:k8s-operator"
+        "tag:k8s-operator",
+        "tag:lga1"
+      ],
+      // lga1 LANs, advertised by the lga1 subnet routers.
+      "192.168.221.0/24": [
+        "tag:lga1"
+      ],
+      "192.168.222.0/24": [
+        "tag:lga1"
+      ],
+      "192.168.223.0/24": [
+        "tag:lga1"
       ],
       // 4via6 form of the same subnet (site ID 1), for devices that cannot
       // use the IPv4 route (overlapping LANs, tag:work has disable-ipv4).
